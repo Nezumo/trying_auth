@@ -3,6 +3,9 @@ const user = require("../Schema/userSchema")
 const { default: mongoose } = require("mongoose")
 const db = require("mongodb")
 
+
+  
+
 module.exports.register_post = ("/register", async (req, res) => {
     
     try {
@@ -26,13 +29,22 @@ module.exports.register_get = ("/register", async (req, res) => {
 }) 
 
 module.exports.login_post = ("/login", async (req, res) => {
-    let args = req.body
-    const Users = await user.find()
-    if (args.email === Users.email) {
-        res.send("logged in")
+    let args = req.body.Email
+    
+    
+    const Users = await user.findOne({ Email: req.body.Email })
+
+    if (Users != null) {
+        res.json("logged in")
     } else {
-        res.json(Users)
+        res.send("failed")
         
     }
 })
 
+
+module.exports.login_get = ("/login", async (req, res) => {
+    const Users = await user.find()
+
+    res.send(Users)
+})

@@ -5,7 +5,7 @@ const Router = require("./auth_Router/router")
 
 app.use(express.json())
 app.use(express.static("public"))
-
+app.use(express.urlencoded({ extended: true }));
 
 
 const dbURI = "mongodb+srv://Nezumo:JuliatorHD1@cluster0.olrgx7x.mongodb.net/"

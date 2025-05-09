@@ -7,7 +7,7 @@ router.get("/", (req, res) => {
 })
 router.get("/register", controller.register_get)
 router.post("/register", controller.register_post)
-
+router.get("/login", controller.login_get)
 router.post("/login", controller.login_post)
 
 module.exports = router
