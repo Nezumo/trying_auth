@@ -2,7 +2,7 @@ const express = require("express")
 const user = require("../Schema/userSchema")
 const { default: mongoose } = require("mongoose")
 const db = require("mongodb")
-
+const bcrypt = require("../Schema/userSchema")
 
   
 
@@ -29,12 +29,13 @@ module.exports.register_get = ("/register", async (req, res) => {
 }) 
 
 module.exports.login_post = ("/login", async (req, res) => {
-    let args = req.body.Email
-    
-    
-    const Users = await user.findOne({ Email: req.body.Email })
 
-    if (Users != null) {
+   
+    
+    const User = await user.findOne({ Email: req.body.Email, Password: req.body.Password })
+    
+
+    if (User != null ) {
         res.json("logged in")
     } else {
         res.send("failed")
