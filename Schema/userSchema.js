@@ -17,12 +17,14 @@ const UserSchema = new mongoose.Schema({
 })
 
 UserSchema.pre("save", async function(next) {
-    const salt =  await bcrypt.genSalt(10)
+    
+    const salt = await bcrypt.genSalt(10)
     this.Password = await bcrypt.hash(this.Password, salt)
     next()
 })
 
 
-const user = mongoose.model("user", UserSchema)
-module.exports = user
-module.exports = bcrypt
+module.exports.user = mongoose.model("user", UserSchema)
+
+
+
