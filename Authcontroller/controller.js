@@ -31,7 +31,7 @@ module.exports.register_post = ("/register", async (req, res) => {
         await NewUser.save()
         res.json(NewUser)
     } catch (err) {
-        const error =ErrorHandler(err)
+        let error =ErrorHandler(err)
         res.status(400).json({error})
     }
 
@@ -39,27 +39,47 @@ module.exports.register_post = ("/register", async (req, res) => {
 }) 
 
 module.exports.register_get = ("/register", async (req, res) => {
-    const Users = await user.find()
+    try {
+        const Users = await user.find()
+        res.send(Users)
 
-    res.send(Users)
+    } catch (err) {
+        let error =ErrorHandler(err)
+        res.status(400).json({error})
+    }
+    
 }) 
 
 module.exports.login_post = ("/login", async (req, res) => {
-
-    const User = await user.findOne({ Email: req.body.Email })
+    try {
+        const User = await user.findOne({ Email: req.body.Email })
     
-
-    if (User != null ) {
+        if (User != null ) {
         
-        res.send("logged in")
-    } else {
-        res.status(404).send("User not found");
+            res.send("logged in")
+        } else {
+            res.status(404).send("User not found");
+        }
+    } catch (err) {
+        let error =ErrorHandler(err)
+        res.status(400).json({error})
     }
+    
 })
 
 
 module.exports.login_get = ("/login", async (req, res) => {
-    const Users = await user.find()
+    try {
+        
+        const Users = await user.find()
+        res.send(Users)
 
-    res.send(Users)
+    } catch (err) {
+        
+        let error =ErrorHandler(err)
+        res.status(400).json({error})
+    
+    }
+    
+    
 })
