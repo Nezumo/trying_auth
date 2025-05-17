@@ -1,9 +1,26 @@
 const express = require("express")
-const user = require("../Schema/userSchema")
+const { user } = require("../Schema/userSchema")
 const db = require("mongodb")
 const bcrypt = require("bcrypt")
 const oldPassword = require("../Schema/userSchema")
+const { Error } = require("mongoose")
   
+
+const ErrorHandler = (err) => {
+    let errors = { email: "", Password: "" }
+    
+    
+    if (err.message.includes("failed")) {
+        Object.values(err.errors).forEach(({ properties }) => {
+            errors[properties.path] = properties.message
+        })
+        
+    } 
+
+    console.log(errors)
+    return errors
+   
+}
 
 module.exports.register_post = ("/register", async (req, res) => {
     
@@ -13,9 +30,9 @@ module.exports.register_post = ("/register", async (req, res) => {
         const NewUser = new user({ Email, Password })
         await NewUser.save()
         res.json(NewUser)
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal server error" });
+    } catch (err) {
+        const error =ErrorHandler(err)
+        res.status(400).json({error})
     }
 
     

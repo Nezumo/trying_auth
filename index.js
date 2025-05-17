@@ -9,8 +9,7 @@ app.use(express.static("public"))
 app.use(express.urlencoded({ extended: true }));
 
 
-
-const dbURI = "mongodb+srv://Nezumo:JuliatorHD1@cluster0.olrgx7x.mongodb.net/"
+const dbURI = "mongodb+srv://Nezumo:JuliatorHD1@cluster0.gjm5pks.mongodb.net/"
 mongoose.connect(dbURI).then(console.log("Database connected"))
 
 app.listen(3001, () => { console.log("listening on Port 3001..") })
