@@ -7,9 +7,14 @@ const { Error } = require("mongoose")
   
 
 const ErrorHandler = (err) => {
+    console.log(err.message, err.code)
+    
     let errors = { email: "", Password: "" }
     
-    
+    if (err.code === 11000) {
+        errors.email = "email already used"
+        return errors
+    }
     if (err.message.includes("failed")) {
         Object.values(err.errors).forEach(({ properties }) => {
             errors[properties.path] = properties.message
@@ -31,7 +36,7 @@ module.exports.register_post = ("/register", async (req, res) => {
         await NewUser.save()
         res.json(NewUser)
     } catch (err) {
-        let error =ErrorHandler(err)
+        const error =ErrorHandler(err)
         res.status(400).json({error})
     }
 
@@ -44,24 +49,34 @@ module.exports.register_get = ("/register", async (req, res) => {
         res.send(Users)
 
     } catch (err) {
-        let error =ErrorHandler(err)
+        const error =ErrorHandler(err)
         res.status(400).json({error})
     }
     
 }) 
 
+function compareHash(password, hashed) {
+    return bcrypt.compare(password, hashed)
+}
+
 module.exports.login_post = ("/login", async (req, res) => {
     try {
         const User = await user.findOne({ Email: req.body.Email })
-    
-        if (User != null ) {
         
-            res.send("logged in")
+
+        if (!User) {
+            res.status(404).send("User not found: ");
+           
+        } 
+        const match =  compareHash(req.body.Password,  User.Password );
+        if (!match) {
+            res.status(401).send("incorrect input credentials: ")
         } else {
-            res.status(404).send("User not found");
+            res.send("logged in")
         }
+        
     } catch (err) {
-        let error =ErrorHandler(err)
+        const error = ErrorHandler(err)
         res.status(400).json({error})
     }
     
@@ -76,7 +91,7 @@ module.exports.login_get = ("/login", async (req, res) => {
 
     } catch (err) {
         
-        let error =ErrorHandler(err)
+        const error =ErrorHandler(err)
         res.status(400).json({error})
     
     }

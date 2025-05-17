@@ -1,14 +1,12 @@
 const mongoose = require("mongoose")
-const { required } = require("nodemon/lib/config")
-const { Unique } = require("typeorm")
 const bcrypt = require("bcrypt")
-const { validate } = require("uuid")
+const { isFunctionDeclaration } = require("typescript");
 const { isEmail } = require("validator")
 
 const UserSchema = new mongoose.Schema({
     Email: {
         type: String,
-        Unique: true,
+        unique: true, 
         required: [true, "please enter an Email"],
         validate: [isEmail, "please enter a valid Email" ]
         
@@ -21,12 +19,20 @@ const UserSchema = new mongoose.Schema({
 
 })
 
+UserSchema.post("save", function (doc, next) {
+    console.log("new user was created & saved", doc.Password)
+
+    next()
+})
+
 UserSchema.pre("save", async function(next) {
     
     const salt = await bcrypt.genSalt(10)
     this.Password = await bcrypt.hash(this.Password, salt)
     next()
 })
+
+
 
 
 module.exports.user = mongoose.model("user", UserSchema)
